@@ -1,21 +1,15 @@
-name: Continuous 40h Test
+name: system-alpha-run
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *' # سيعمل تلقائياً كل 4 ساعات
+    - cron: '0 */4 * * *'
 jobs:
-  run-test:
+  run-service:
     runs-on: ubuntu-latest
     steps:
-      - name: Notify Telegram
+      - name: telegram-notice
+        run: curl -s -X POST https://api.telegram.org/bot8308175649:AAGEjdIYTrZNkuNu65QvhVHFgewUGKqpnvc/sendMessage -d chat_id=6302599291 -d text="📡 [Alpha-01] بدأت جلسة الـ 40 ساعة بنجاح.."
+      - name: nodepay-core
         run: |
-          curl -s -X POST https://api.telegram.org/bot8308175649:AAGEjdIYTrZNkuNu65QvhVHFgewUGKqpnvc/sendMessage \
-          -d chat_id=6302599291 \
-          -d text="⏳ [Alpha-01] بدء جلسة جمع نقاط جديدة (اختبار الـ 40 ساعة)..."
-      - name: Core Service
-        run: |
-          # تشغيل الخدمة في الخلفية
-          docker run -d --name sys-service -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest
-          # الانتظار لمدة 3 ساعات ونصف (أقصى وقت آمن للجلسة)
+          docker run -d -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest
           sleep 12600
-          docker stop sys-service
