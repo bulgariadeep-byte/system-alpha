@@ -8,8 +8,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: telegram-notice
-        run: curl -s -X POST https://api.telegram.org/bot8308175649:AAGEjdIYTrZNkuNu65QvhVHFgewUGKqpnvc/sendMessage -d chat_id=6302599291 -d text="📡 [Alpha-01] بدأت جلسة الـ 40 ساعة بنجاح.."
+        run: curl -s -X POST https://api.telegram.org/bot8308175649:AAGEjdIYTrZNkuNu65QvhVHFgewUGKqpnvc/sendMessage -d chat_id=6302599291 -d text="🚀 [Alpha-01] تم تحديث المحرك.. بدء اختبار الـ 40 ساعة!"
       - name: nodepay-core
         run: |
-          docker run -d -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest
+          # استخدام محرك بديل وموثوق
+          docker run -d -e NP_TOKEN="${{ secrets.NODEPAY_TOKEN }}" naisync/nodepay:latest
           sleep 12600
