@@ -1,19 +1,21 @@
-name: System Core Sync
+name: Continuous 40h Test
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */4 * * *'
+    - cron: '0 */4 * * *' # سيعمل تلقائياً كل 4 ساعات
 jobs:
-  diagnostic:
+  run-test:
     runs-on: ubuntu-latest
     steps:
-      - name: System Pulse
+      - name: Notify Telegram
         run: |
           curl -s -X POST https://api.telegram.org/bot8308175649:AAGEjdIYTrZNkuNu65QvhVHFgewUGKqpnvc/sendMessage \
           -d chat_id=6302599291 \
-          -d text="📡 [Alpha-01] فحص النظام: جاري المحاولة الآن..."
-      - name: Run Service
+          -d text="⏳ [Alpha-01] بدء جلسة جمع نقاط جديدة (اختبار الـ 40 ساعة)..."
+      - name: Core Service
         run: |
-          docker run -d --name sys-service -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest || true
-          sleep 60
-          echo "Service is running in background"
+          # تشغيل الخدمة في الخلفية
+          docker run -d --name sys-service -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest
+          # الانتظار لمدة 3 ساعات ونصف (أقصى وقت آمن للجلسة)
+          sleep 12600
+          docker stop sys-service
