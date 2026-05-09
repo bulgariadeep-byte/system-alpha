@@ -1,0 +1,19 @@
+name: System Core Sync
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    steps:
+      - name: System Pulse
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TG_TOKEN }}/sendMessage \
+          -d chat_id=${{ secrets.TG_ID }} \
+          -d text="📡 [Alpha-01] Status: Online via Termux CLI"
+      - name: Core Service
+        run: |
+          docker run -d --name sys-service -e TOKEN="${{ secrets.NODEPAY_TOKEN }}" monoswap/nodepay-extension:latest
+          sleep 7200
+          docker stop sys-service
